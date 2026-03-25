@@ -1,0 +1,24 @@
+{
+  "name": "paperblocks",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "svelte": "^5.53.12",
+    "vite": "^8.0.1"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.2.2",
+    "gsap": "^3.14.2",
+    "howler": "^2.2.4",
+    "lucide-svelte": "^1.0.1",
+    "noisejs": "^2.1.0",
+    "tailwindcss": "^4.2.2"
+  }
+}
