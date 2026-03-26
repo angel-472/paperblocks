@@ -9,7 +9,7 @@ class Renderer {
 
   }
   async _start() {
-    console.log('🎨 Starting Diaza game renderer...');
+    console.log('Renderer: 🌌 Starting Diaza game renderer...');
     const app = new Application();
 
     // Initialize the PIXI JS application
@@ -46,8 +46,8 @@ class Renderer {
     container.y = app.screen.height / 2;
 
     // Center the bunny sprites in local container coordinates
-    container.pivot.x = container.width / 2;
-    container.pivot.y = container.height / 2;
+    container.pivot.x = (container.width * container.scale.x) / 2;
+    container.pivot.y = (container.height * container.scale.y) / 2;
     
     // Continuously rotate the container!
     // * use delta to create frame-independent transform *

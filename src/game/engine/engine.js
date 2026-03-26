@@ -4,12 +4,14 @@ import { renderer } from './renderer.js';
 class Engine {
   // Private fields
   #renderer;
+  #nodeTree;
 
   constructor(){
     this.#renderer = renderer;
+    this.#nodeTree = []; // An array of Node objects representing the logical scene graph (both rendering and non-rendering nodes)
   }
   async _start(){
-    console.log('⚙️ Starting Diaza game engine...');
+    console.log('Engine: ⚙️ Starting Diaza game engine...');
     await this.#renderer._start();
 
     this.#startGameLoop(); // Start the game lifecycle loop
