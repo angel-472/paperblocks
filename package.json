@@ -19,6 +19,7 @@
     "howler": "^2.2.4",
     "lucide-svelte": "^1.0.1",
     "noisejs": "^2.1.0",
+    "pixi.js": "^8.17.1",
     "tailwindcss": "^4.2.2"
   }
 }
