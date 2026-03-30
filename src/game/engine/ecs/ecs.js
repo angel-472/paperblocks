@@ -85,6 +85,7 @@ export class ECS {
     return result;
   }
 
+  // QUERY THE ECS FOR ENTITIES
   // returns all entity IDs that have ALL of the requested component types
   query(...types){
     const result = [];
@@ -97,15 +98,17 @@ export class ECS {
       return this.#components.get(type);
     });
 
-    let entityIds = new Map();
-    componentMaps.forEach((componentMap) => {
-      for(const key of [...componentMap.keys()]){
-        if(componentMaps.every((componentMap) => componentMap.has(key))){
-          entityIds.set(key, true);
-        }
-      }
-    });
+    // Sort maps by size, iterate the smallest
+    componentMaps.sort((a, b) => a.size - b.size);
+    const [smallest, ...rest] = componentMaps;
 
-    return [...entityIds.keys()];
+
+    for (const key of smallest.keys()) {
+      if (rest.every(map => map.has(key))) {
+        result.push(key);
+      }
+    }
+
+    return result;
   }
 }
