@@ -1,20 +1,20 @@
 import { renderer } from './renderer.js';
+import { ECS } from './ecs/ecs.js';
 
 // Main engine component, responsible for mananing the high level game loop, delegates to scene tree for rendering and updates
 class Engine {
-  // Private fields
   #renderer;
-  #nodeTree;
+  #ecs;
 
   constructor(){
     this.#renderer = renderer;
-    this.#nodeTree = []; // An array of Node objects representing the logical scene graph (both rendering and non-rendering nodes)
+    this.#ecs = new ECS();
   }
   async _start(){
-    console.log('Engine: ⚙️ Starting Diaza game engine...');
+    console.log('Engine: Starting game engine...');
     await this.#renderer._start();
 
-    this.#startGameLoop(); // Start the game lifecycle loop
+    this.#startGameLoop();
   }
   // Update lifecycle method, called every millisecond (uncapped) by the game loop, provides deltaTime for frame-independent updates
   _update(deltaTime){
@@ -27,6 +27,9 @@ class Engine {
       this._update(deltaTime);
       lastFrameTime = performance.now();
     }, 0); // Run an update loop (uncapped, provides deltaTime)
+  }
+  getECS(){
+    return this.#ecs;
   }
 }
 
