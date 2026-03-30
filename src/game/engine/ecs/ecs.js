@@ -23,7 +23,7 @@ export class ECS {
       return;
     }
     this.#componentTypes.set(name, defaultData);
-    this.#components.set(name, []);
+    this.#components.set(name, new Map());
   }
 
 
@@ -48,7 +48,7 @@ export class ECS {
     const defaultData = this.#componentTypes.get(componentType);
     const componentData = { ...defaultData, ...modifiedData, entityId };
 
-    this.#components.get(componentType)[entityId] = componentData;
+    this.#components.get(componentType).set(entityId, componentData);
   }
 
   getComponent(entityId, componentType){
@@ -56,7 +56,7 @@ export class ECS {
       console.error(`[ECS] Component type '${componentType}' is not registered`);
       return;
     }
-    return this.#components.get(componentType)[entityId];
+    return this.#components.get(componentType).get(entityId);
   }
 
   hasComponent(entityId, componentType){
@@ -72,7 +72,7 @@ export class ECS {
       console.error(`[ECS] Entity with id '${entityId}' does not have component '${componentType}'. Skipping.`);
       return;
     }
-    this.#components.get(componentType)[entityId] = undefined;
+    this.#components.get(componentType).delete(entityId);
   }
 
   getAllComponents(entityId){
@@ -83,5 +83,29 @@ export class ECS {
       }
     }
     return result;
+  }
+
+  // returns all entity IDs that have ALL of the requested component types
+  query(...types){
+    const result = [];
+
+    // Gets the data Map of all specified component types
+    let componentMaps = types.map((type) => {
+      if(!this.componentTypeExists(type)) {
+        throw new Error(`[ECS] Component type '${type}' is not registered.`);
+      }
+      return this.#components.get(type);
+    });
+
+    let entityIds = new Map();
+    componentMaps.forEach((componentMap) => {
+      for(const key of [...componentMap.keys()]){
+        if(componentMaps.every((componentMap) => componentMap.has(key))){
+          entityIds.set(key, true);
+        }
+      }
+    });
+
+    return [...entityIds.keys()];
   }
 }
