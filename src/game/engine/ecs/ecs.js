@@ -88,6 +88,7 @@ export class ECS {
   // QUERY THE ECS FOR ENTITIES
   // returns all entity IDs that have ALL of the requested component types
   query(...types){
+    const start = performance.now()
     const result = [];
 
     // Gets the data Map of all specified component types
@@ -109,6 +110,7 @@ export class ECS {
       }
     }
 
+    console.log(`Did query in ${performance.now() - start}ms`)
     return result;
   }
 }

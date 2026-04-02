@@ -14,14 +14,6 @@ export class Game {
     this.testECS();
   }
   testECS(){
-    // Little ECS test
-    const ecs = this.#engine.getECS();
-    ecs.registerComponentType('Transform', {x: 0, y: 0, rotation: 0, zIndex: 0, scale: {x: 1, y: 1}});
-    ecs.registerComponentType('Area', {width: 0, height: 0});
-
-    // Create a Player entity
-    const playerEntityId = ecs.createEntity();
-    ecs.addComponent(playerEntityId, 'Transform', {x: 1, y: 1});
-    ecs.addComponent(playerEntityId, 'Transform', {x: 1, y: 1});
+ 
   }
 }

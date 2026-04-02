@@ -1,5 +1,6 @@
 import { renderer } from './renderer.js';
 import { ECS } from './ecs/ecs.js';
+import { registerDefaultComponents } from "./defaultComponents.js";
 
 // Main engine component, responsible for mananing the high level game loop, delegates to scene tree for rendering and updates
 class Engine {
@@ -12,6 +13,8 @@ class Engine {
   }
   async _start(){
     console.log('Engine: Starting game engine...');
+    console.log(`Engine: Registering default ECS components for Engine...`);
+    registerDefaultComponents(this.#ecs);
     await this.#renderer._start();
 
     this.#startGameLoop();

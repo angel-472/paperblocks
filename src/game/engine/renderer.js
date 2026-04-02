@@ -13,7 +13,7 @@ class Renderer {
     const app = new Application();
 
     // Initialize the PIXI JS application
-    await app.init({ background: '#1099bb', resizeTo: window });
+    await app.init({ background: 'lightgray', resizeTo: window });
     document.body.appendChild(app.canvas);
     this.#app = app;
 
