@@ -7,7 +7,7 @@
     game._start(); //Starts the game (async method, but we don't need to await it here)
 
     if(import.meta.env.DEV) {
-      console.clog(`[DEBUG] Game instance created:`);
+      console.log(`[DEBUG] Game instance created:`);
       console.log(game); // Log the game instance for debugging
       window.game = game; // Expose the game instance for debugging in development mode
     }

@@ -13,6 +13,7 @@ export class Game {
   }
   async _start() {
     await loadTextures(TEXTURES_TO_LOAD);
+    console.log(`Game: Loaded all assets, starting engine...`);
     await this.#engine._start();
   }
 }
