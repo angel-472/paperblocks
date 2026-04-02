@@ -1,5 +1,7 @@
 import { engine } from '../engine/engine.js';
-import { load}
+import { loadTextures } from './utils/assetsManager.js';
+
+import { TEXTURES_TO_LOAD } from './constants/textures.js';
 
 // Entry point for PaperBlocks game, uses the engine and ECS Scene to manage the game.
 export class Game {
@@ -10,8 +12,7 @@ export class Game {
     this.#engine = engine;
   }
   async _start() {
+    await loadTextures(TEXTURES_TO_LOAD);
     await this.#engine._start();
-
-    this.testECS();
   }
 }
