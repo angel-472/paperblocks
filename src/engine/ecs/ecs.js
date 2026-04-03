@@ -35,6 +35,15 @@ export class ECS {
     return id;
   }
 
+  // Deletes an entity and all of its components, should be used when you want to remove an entity from the scene, such as when an enemy dies
+  destroyEntity(entityId) {
+    for (const [key, value] of this.#componentTypes) {
+      if(this.hasComponent(entityId, key)){
+        this.removeComponent(entityId, key);
+      }
+    }
+  }
+
   addComponent(entityId, componentType, modifiedData = {}) {
     if(!this.componentTypeExists(componentType)) {
       console.error(`[ECS] Component type '${componentType}' is not registered`);
@@ -110,7 +119,7 @@ export class ECS {
       }
     }
 
-    console.log(`Did query in ${performance.now() - start}ms`)
+    // console.log(`Did query in ${performance.now() - start}ms`)
     return result;
   }
 }
