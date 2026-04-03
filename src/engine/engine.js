@@ -35,6 +35,9 @@ class Engine {
   getECS(){
     return this.#ecs;
   }
+  getCamera(){
+    return this.#renderSystem.camera;
+  }
 }
 
 export const engine = new Engine();

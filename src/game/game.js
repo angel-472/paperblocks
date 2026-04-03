@@ -19,6 +19,8 @@ export class Game {
     this.addABlockOmg(30, 0);
     this.addABlockOmg(50, 0);
     this.addABlockOmg(70, 0);
+
+    this.#engine.getCamera().setZoom(5, 58, 0)
   }
   addABlockOmg(canvasX, canvasY){
     const ecs = this.#engine.getECS();
