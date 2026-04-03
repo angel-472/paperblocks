@@ -2,6 +2,8 @@
 // Allows queries for entities with specific components, used by systems to operate on the data
 // Data-oriented design, entities are just IDs, components hold data, and systems operate on the data
 
+import { signal } from '../signal.js';
+
 export class ECS {
   #components;
   #componentTypes;
@@ -37,6 +39,8 @@ export class ECS {
 
   // Deletes an entity and all of its components, should be used when you want to remove an entity from the scene, such as when an enemy dies
   destroyEntity(entityId) {
+    signal.emit("ECS_EntityDestroyed", {entityId}); // Emit before cleanup so systems can react to the destruction
+     
     for (const [key, value] of this.#componentTypes) {
       if(this.hasComponent(entityId, key)){
         this.removeComponent(entityId, key);
@@ -58,6 +62,7 @@ export class ECS {
     const componentData = { ...defaultData, ...modifiedData, entityId };
 
     this.#components.get(componentType).set(entityId, componentData);
+    signal.emit("ECS_ComponentAdded", {entityId, componentType, componentData});
   }
 
   getComponent(entityId, componentType){
@@ -82,6 +87,7 @@ export class ECS {
       return;
     }
     this.#components.get(componentType).delete(entityId);
+    signal.emit("ECS_ComponentRemoved", {entityId, componentType});
   }
 
   getAllComponents(entityId){
