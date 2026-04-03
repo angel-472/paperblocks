@@ -12,13 +12,13 @@ export class Game {
     this.#engine = engine;
   }
   async _start() {
-    await loadTextures(TEXTURES_TO_LOAD);
+    await loadTextures(TEXTURES_TO_LOAD, true);
     console.log(`Game: Loaded all assets, starting engine...`);
     await this.#engine._start();
 
-    this.addABlockOmg(30, 300);
-    this.addABlockOmg(46, 300);
-    this.addABlockOmg(70, 300);
+    this.addABlockOmg(30, 0);
+    this.addABlockOmg(50, 0);
+    this.addABlockOmg(70, 0);
   }
   addABlockOmg(canvasX, canvasY){
     const ecs = this.#engine.getECS();

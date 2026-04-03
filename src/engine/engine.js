@@ -1,4 +1,4 @@
-import { renderSystem } from './systems/renderSystem.js';
+import { renderSystem } from './systems/rendering/renderSystem.js';
 import { ECS } from './ecs/ecs.js';
 import { registerDefaultComponents } from "./defaultComponents.js";
 

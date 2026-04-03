@@ -1,12 +1,13 @@
 import { Application, Assets, Container, Sprite } from 'pixi.js';
-import { getTexture } from '../utils/assetsManager';
-import { engine } from '../engine.js';
+import { Camera } from './camera.js';
+
+import { getTexture } from '../../utils/assetsManager';
+import { engine } from '../../engine.js';
 
 // Renderer engine component, responsible for rendering and updating the game graphics using PixiJS
 class RenderSystem {
   #container;
   #app;
-  #camera;
 
   async _start() {
     console.log('RenderSystem: Starting render system using PixiJS...');
@@ -21,12 +22,15 @@ class RenderSystem {
     const container = new Container();
     app.stage.addChild(container);
     this.#container = container;
+    this.camera = new Camera(app, container);
   }
   // Update logic for the renderer, called every frame with deltaTime for frame-independent updates
   _update(deltaTime) {
-    this.#updateSprites(deltaTime);
+    this.updateSprites(deltaTime);
+
+    this.camera._update(deltaTime);
   }
-  #updateSprites(deltaTime){
+  updateSprites(deltaTime){
     const ecs = engine.getECS();
 
     for(const eid of ecs.query('Transform', 'Sprite')){
