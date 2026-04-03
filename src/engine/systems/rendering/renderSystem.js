@@ -38,7 +38,7 @@ class RenderSystem {
         // Already has a PixiSprite, just need to sync transform
         const transform = ecs.getComponent(eid, 'Transform');
         const pixiSpriteComp = ecs.getComponent(eid, 'PixiSprite');
-        this.syncTransform(transform, pixiSpriteComp.ref);
+        this.syncSpriteTransform(transform, pixiSpriteComp.ref);
       }
       else {
         // No PixiSprite yet, need to create one and add it to the container
@@ -50,20 +50,23 @@ class RenderSystem {
         }
 
         const pixiSprite = new Sprite(texture);
-        this.syncTransform(transform, pixiSprite);
+        pixiSprite.anchor.set(0.5); // Center the sprite on its position
+        this.syncSpriteTransform(transform, pixiSprite);
 
         this.#container.addChild(pixiSprite);
         ecs.addComponent(eid, 'PixiSprite', {ref: pixiSprite});
       }
     }
   }
-  syncTransform(transform, pixiSprite){
+  syncSpriteTransform(transform, pixiSprite){
     pixiSprite.x = transform.x;
     pixiSprite.y = transform.y;
     pixiSprite.rotation = transform.rotation;
     pixiSprite.zIndex = transform.zIndex;
     pixiSprite.width = pixiSprite.width * transform.scale.x;
     pixiSprite.height = pixiSprite.height * transform.scale.y;
+
+    pixiSprite.angle = transform.rotation;
   }
 }
 
