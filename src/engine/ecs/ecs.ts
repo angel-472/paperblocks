@@ -16,11 +16,11 @@ export class ECS {
   }
 
   // Component Type Methods
-  componentTypeExists(name){
+  componentTypeExists(name: string) {
     return this.#componentTypes.has(name);
   }
 
-  registerComponentType(name, defaultData) {
+  registerComponentType(name: string, defaultData: any) {
     if(this.componentTypeExists(name)) {
       console.error(`[ECS] Component type '${name}' is already registered`);
       return;
@@ -39,7 +39,7 @@ export class ECS {
   }
 
   // Deletes an entity and all of its components, should be used when you want to remove an entity from the scene, such as when an enemy dies
-  destroyEntity(entityId) {
+  destroyEntity(entityId: number) {
     signal.emit("ECS_EntityDestroyed", {entityId}); // Emit before cleanup so systems can react to the destruction
      
     for (const [key, value] of this.#componentTypes) {
@@ -49,12 +49,12 @@ export class ECS {
     }
   }
 
-  addComponent(entityId, componentType, modifiedData = {}) {
+  addComponent(entityId: number, componentType: string, modifiedData = {}) {
     if(!this.componentTypeExists(componentType)) {
       console.error(`[ECS] Component type '${componentType}' is not registered`);
       return;
     }
-    if(this.#components.get(componentType)[entityId] !== undefined){
+    if(this.#components.get(componentType)?.get(entityId) !== undefined){
       console.error(`[ECS] Tried to add duplicate component '${componentType}' to entity with id '${entityId}'. Skipping.`);
       return;
     }
@@ -62,23 +62,23 @@ export class ECS {
     const defaultData = this.#componentTypes.get(componentType);
     const componentData = { ...defaultData, ...modifiedData, entityId };
 
-    this.#components.get(componentType).set(entityId, componentData);
+    this.#components.get(componentType)?.set(entityId, componentData);
     signal.emit("ECS_ComponentAdded", {entityId, componentType, componentData});
   }
 
-  getComponent(entityId, componentType){
+  getComponent(entityId: number, componentType: string){
     if(!this.componentTypeExists(componentType)) {
       console.error(`[ECS] Component type '${componentType}' is not registered`);
       return;
     }
-    return this.#components.get(componentType).get(entityId);
+    return this.#components.get(componentType)?.get(entityId);
   }
 
-  hasComponent(entityId, componentType){
+  hasComponent(entityId: number, componentType: string){
     return this.getComponent(entityId, componentType) !== undefined;
   }
 
-  removeComponent(entityId, componentType) {
+  removeComponent(entityId: number, componentType: string) {
     if(!this.componentTypeExists(componentType)) {
       console.error(`[ECS] Component type '${componentType}' is not registered`);
       return;
@@ -87,11 +87,11 @@ export class ECS {
       console.error(`[ECS] Entity with id '${entityId}' does not have component '${componentType}'. Skipping.`);
       return;
     }
-    this.#components.get(componentType).delete(entityId);
+    this.#components.get(componentType)?.delete(entityId);
     signal.emit("ECS_ComponentRemoved", {entityId, componentType});
   }
 
-  getAllComponents(entityId){
+  getAllComponents(entityId: number){
     let result = [];
     for (const [key, value] of this.#componentTypes) {
       if(this.hasComponent(entityId, key)){
@@ -103,7 +103,7 @@ export class ECS {
 
   // QUERY THE ECS FOR ENTITIES
   // returns all entity IDs that have ALL of the requested component types
-  query(...types){
+  query(...types: string[]) {
     const start = performance.now()
     const result = [];
 
