@@ -105,14 +105,18 @@ export class ECS {
   // returns all entity IDs that have ALL of the requested component types
   query(...types: string[]) {
     const start = performance.now()
-    const result = [];
+    const result: number[] = [];
 
     // Gets the data Map of all specified component types
-    let componentMaps = types.map((type) => {
+    const componentMaps = types.map((type): Map<number, any> => {
       if(!this.componentTypeExists(type)) {
         throw new Error(`[ECS] Component type '${type}' is not registered.`);
       }
-      return this.#components.get(type);
+      const componentMap = this.#components.get(type);
+      if (!componentMap) {
+        throw new Error(`[ECS] Internal error: component storage for type '${type}' is missing.`);
+      }
+      return componentMap;
     });
 
     // Sort maps by size, iterate the smallest
