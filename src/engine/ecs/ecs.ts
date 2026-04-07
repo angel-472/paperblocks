@@ -5,8 +5,9 @@
 import { signal } from '../signal.js';
 
 export class ECS {
-  #components;
-  #componentTypes;
+  #components: Map<string, Map<number, any>>; // <componentType, <entityId, componentData>>
+  #componentTypes: Map<string, any>; // <componentType, defaultData>
+  nextId: number;
 
   constructor() {
     this.nextId = 0;
