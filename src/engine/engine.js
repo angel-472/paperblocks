@@ -1,27 +1,33 @@
-import { renderSystem } from './systems/rendering/renderSystem.js';
 import { ECS } from './ecs/ecs.js';
 import { registerDefaultComponents } from "./defaultComponents.js";
+
+import { renderSystem } from './systems/rendering/renderSystem.js';
+import { physicsSystem } from './systems/physics/physicsSystem.js';
 
 // Main engine component, responsible for mananing the high level game loop, delegates to scene tree for rendering and updates
 class Engine {
   #renderSystem;
   #ecs;
+  #physicsSystem;
 
   constructor(){
     this.#renderSystem = renderSystem;
     this.#ecs = new ECS();
+    this.#physicsSystem = physicsSystem;
   }
   async _start(options = {}) {
     console.log('Engine: Starting game engine...');
     console.log(`Engine: Registering default ECS components for Engine...`);
     registerDefaultComponents(this.#ecs);
     await this.#renderSystem._start();
+    await this.#physicsSystem._start();
 
     this.#startGameLoop();
   }
   // Update lifecycle method, called every millisecond (uncapped) by the game loop, provides deltaTime for frame-independent updates
   _update(deltaTime){
-    
+    this.#physicsSystem._update(deltaTime); //first, so that physics updates before rendering
+
     this.#renderSystem._update(deltaTime); //last
   }
   #startGameLoop(){

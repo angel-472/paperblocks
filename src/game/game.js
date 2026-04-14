@@ -20,13 +20,23 @@ export class Game {
     this.addABlockOmg(50, 0);
     this.addABlockOmg(70, 0);
 
-    this.#engine.getCamera().setZoom(5, 58, 0)
+    this.addTestBody();
+
+    this.#engine.getCamera().setZoom(1, 58, 0)
   }
   addABlockOmg(canvasX, canvasY){
     const ecs = this.#engine.getECS();
     const blockEntity = ecs.createEntity();
     ecs.addComponent(blockEntity, 'Transform', {x: canvasX, y: canvasY, rotation: 0, zIndex: 0, scale: {x: 1, y: 1}});
-    ecs.addComponent(blockEntity, 'Area', {width: 16, height: 16});
     ecs.addComponent(blockEntity, 'Sprite', {width: 16, height: 16, textureId: "grass"});
+    ecs.addComponent(blockEntity, 'Collider', {width: 16, height: 16, friction: 0.85});
+  }
+  addTestBody(){
+      const ecs = this.#engine.getECS();
+      const blockEntity = ecs.createEntity();
+      ecs.addComponent(blockEntity, 'Transform', {x: 75, y: -100, rotation: 0, zIndex: 0, scale: {x: 1, y: 1}});
+      ecs.addComponent(blockEntity, 'Sprite', {width: 16, height: 16, textureId: "no_sprite"});
+      ecs.addComponent(blockEntity, 'Velocity', {x: -0.5, y: 0, weight: 1});
+      ecs.addComponent(blockEntity, 'Collider', {width: 16, height: 16, friction: 0.85});
   }
 }

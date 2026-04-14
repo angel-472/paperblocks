@@ -26,11 +26,11 @@ class RenderSystem {
   }
   // Update logic for the renderer, called every frame with deltaTime for frame-independent updates
   _update(deltaTime) {
-    this.updateSprites(deltaTime);
+    this._updateSprites(deltaTime);
 
     this.camera._update(deltaTime);
   }
-  updateSprites(deltaTime){
+  _updateSprites(deltaTime){
     const ecs = engine.getECS();
 
     for(const eid of ecs.query('Transform', 'Sprite')){
