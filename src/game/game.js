@@ -16,13 +16,13 @@ export class Game {
     console.log(`Game: Loaded all assets, starting engine...`);
     await this.#engine._start();
 
-    this.addABlockOmg(30, 0);
-    this.addABlockOmg(50, 0);
-    this.addABlockOmg(70, 0);
+    this.addABlockOmg((16 * 1), 0);
+    this.addABlockOmg((16 * 3), 0);
+    this.addABlockOmg((16 * 5), 0);
 
     this.addTestBody();
 
-    this.#engine.getCamera().setZoom(1, 58, 0)
+    this.#engine.getCamera().setZoom(2, 58, 0)
   }
   addABlockOmg(canvasX, canvasY){
     const ecs = this.#engine.getECS();
@@ -34,9 +34,9 @@ export class Game {
   addTestBody(){
       const ecs = this.#engine.getECS();
       const blockEntity = ecs.createEntity();
-      ecs.addComponent(blockEntity, 'Transform', {x: 75, y: -100, rotation: 0, zIndex: 0, scale: {x: 1, y: 1}});
+      ecs.addComponent(blockEntity, 'Transform', {x: 16 * 2, y: 16 * -2, rotation: 0, zIndex: 0, scale: {x: 1, y: 1}});
       ecs.addComponent(blockEntity, 'Sprite', {width: 16, height: 16, textureId: "no_sprite"});
-      ecs.addComponent(blockEntity, 'Velocity', {x: -0.5, y: 0, weight: 1});
+      ecs.addComponent(blockEntity, 'Velocity', {x: 0, y: 0, weight: 1, ignoreGravity: true});
       ecs.addComponent(blockEntity, 'Collider', {width: 16, height: 16, friction: 0.85});
   }
 }
