@@ -1,12 +1,17 @@
 import { engine } from '../../engine.js';
 
-let GRAVITY = 0.1; // Gravity constant, adjust as needed
-
+const GRAVITY = 0.1; // Gravity constant, adjust as needed
 export const SPATIAL_GRID_CELL_SIZE = 16; // Size of each cell in the spatial grid, adjust based on typical entity size
-const spatialGrid = new Map<string, Array<number>>(); // <cellKey, entityIds[]>
 
 
 class PhysicsSystem {
+  spatialGrid;
+  spatialGridCellSize;
+
+  constructor(){
+    this.spatialGrid = new Map<string, Set<number>>(); // <cellKey, entityIds<>>
+    this.spatialGridCellSize = SPATIAL_GRID_CELL_SIZE;
+  }
   _start(){
 
   }
@@ -34,6 +39,15 @@ class PhysicsSystem {
         velocity.y += GRAVITY * deltaTime;
       }
 
+      // Apply friction to velocity
+      const AIR_FRICTION = 0.025;
+      if(velocity.x > 0){
+        velocity.x = Math.max(0, velocity.x - (AIR_FRICTION * deltaTime));
+      }
+      else{
+        velocity.x = Math.min(0, velocity.x + (AIR_FRICTION * deltaTime))
+      }
+
       // Check for collisions before changing transform (?)
       const collider = ecs.getComponent(eid, 'Collider');
       if(collider){
@@ -56,6 +70,16 @@ class PhysicsSystem {
 
     const ecs = engine.getECS();
 
+    for(const eid of ecs.query('Collider', 'Transform')){
+      const transform = ecs.getComponent(eid, 'Transform');
+      const collider = ecs.getComponent(eid, 'Collider');
+
+      const coveredCells = this.getCoveredCells(transform, collider);
+
+      // TODO: Finish collision check by grabbing all entity ids in covered Cells, accounting also for future ones (thus testX, testY)
+
+    }
+
     return false; //for now
   }
 
@@ -66,21 +90,33 @@ class PhysicsSystem {
       const transform = ecs.getComponent(eid, 'Transform');
       const collider = ecs.getComponent(eid, 'Collider');
 
+      if(collider.coveredCells !== undefined){
+        for(const cellKey of collider.coveredCells){
+          const gridCellSet = this.spatialGrid.get(cellKey);
+          gridCellSet?.delete(eid);
+
+          // get rid of empty sets to avoid memory leak
+          if(gridCellSet?.size <= 0){
+            this.spatialGrid.delete(cellKey);
+          }
+        }
+      }
+
       let coveredCells = this.getCoveredCells(transform, collider);
-      // console.log(coveredCells, eid)
+      collider.coveredCells = coveredCells;
       
       // Update spatial grid with the entity's current cells
       for(const cellKey of coveredCells){
-        if(!spatialGrid.has(cellKey)){
-          spatialGrid.set(cellKey, []);
+        if(!this.spatialGrid.has(cellKey)){
+          this.spatialGrid.set(cellKey, new Set());
         }
-        spatialGrid.get(cellKey)?.push(eid);
+        this.spatialGrid.get(cellKey)?.add(eid);
       }
     }
   }
 
   getCoveredCells(transform: any, collider: any): string[] {
-    //Returns an array of cell keys that the collider currently occupies based on its transform and collider components.
+    //Returns an array of cell keys that the collider currently occupies based on its transform posiiton and collider size
 
     const spatialX = Math.floor(transform.x / SPATIAL_GRID_CELL_SIZE);
     const spatialY = Math.floor(transform.y / SPATIAL_GRID_CELL_SIZE);

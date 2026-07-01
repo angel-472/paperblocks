@@ -17,8 +17,9 @@ export class Game {
     await this.#engine._start();
 
     this.addABlockOmg((16 * 1), 0);
+    this.addABlockOmg((16 * 2), 0);
     this.addABlockOmg((16 * 3), 0);
-    this.addABlockOmg((16 * 5), 0);
+    this.addABlockOmg((16 * 4), 0);
 
     this.addTestBody();
 
@@ -36,7 +37,7 @@ export class Game {
       const blockEntity = ecs.createEntity();
       ecs.addComponent(blockEntity, 'Transform', {x: 16 * 2, y: 16 * -2, rotation: 0, zIndex: 0, scale: {x: 1, y: 1}});
       ecs.addComponent(blockEntity, 'Sprite', {width: 16, height: 16, textureId: "no_sprite"});
-      ecs.addComponent(blockEntity, 'Velocity', {x: 0, y: 0, weight: 1, ignoreGravity: true});
+      ecs.addComponent(blockEntity, 'Velocity', {x: 0.75, y: 0, weight: 1, ignoreGravity: false});
       ecs.addComponent(blockEntity, 'Collider', {width: 16, height: 16, friction: 0.85});
   }
 }

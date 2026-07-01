@@ -17,7 +17,7 @@ export function registerDefaultComponents(ecs){
   // physics components
 
   // NOTE: Collider friction defines the Velocity reduction applied when an entity is in direct contact with another collider. 0.85 means velocity will be reduced to 85% of its value every frame while colliding.
-  ecs.registerComponentType('Collider', {width: 0, height: 0, passthrough: false, friction: 0.85, _spatialHashingData: {}}); 
+  ecs.registerComponentType('Collider', {width: 0, height: 0, passthrough: false, friction: 0.85, coveredCells: []}); 
   ecs.registerComponentType('Velocity', {x: 0, y: 0, weight: 1, ignoreGravity: false});
 
   runOnce = true;
