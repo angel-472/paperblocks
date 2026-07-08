@@ -54,10 +54,10 @@ class PhysicsSystem {
         const futureX = transform.x + velocity.x;
         const futureY = transform.y + velocity.y;
 
-        if(this.checkForCollisions(collider, futureX, transform.y)){
+        if(this.checkForCollisions(collider, transform, futureX, transform.y)){
           velocity.x = 0; // Stop horizontal movement on collision
         }
-        if(this.checkForCollisions(collider, transform.x, futureY)){
+        if(this.checkForCollisions(collider, transform, transform.x, futureY)){
           velocity.y = 0; // Stop vertical movement on collision
         }
       }
@@ -65,19 +65,26 @@ class PhysicsSystem {
       transform.y += velocity.y;
     }
   }
-  checkForCollisions(collider: any, testX: number, testY: number): boolean {
+  checkForCollisions(collider: any, transform: any, testX: number, testY: number): boolean {
     //Checks if there would be a collision if the collider were at the testX and testY position. Returns true if a collision would occur.
 
     const ecs = engine.getECS();
 
-    for(const eid of ecs.query('Collider', 'Transform')){
-      const transform = ecs.getComponent(eid, 'Transform');
-      const collider = ecs.getComponent(eid, 'Collider');
+    let futureTransform = structuredClone(transform)
 
-      const coveredCells = this.getCoveredCells(transform, collider);
+    const futureCoveredCells = this.getCoveredCells(futureTransform, collider);
+    
+    for(const cellKey of futureCoveredCells){
+      const entityIds = this.spatialGrid.get(cellKey);
 
-      // TODO: Finish collision check by grabbing all entity ids in covered Cells, accounting also for future ones (thus testX, testY)
+      if(entityIds === undefined) continue;
 
+      for(const eid of entityIds){
+        if(eid === collider.entityId) continue;
+
+        console.log("Shared space :o")
+        // TODO: Axis-Aligned Bounding Box (AABB) collision detection between concerned collider and entity that shares the cell
+      }
     }
 
     return false; //for now
@@ -92,11 +99,15 @@ class PhysicsSystem {
 
       if(collider.coveredCells !== undefined){
         for(const cellKey of collider.coveredCells){
+
           const gridCellSet = this.spatialGrid.get(cellKey);
-          gridCellSet?.delete(eid);
+
+          if(gridCellSet === undefined) continue;
+
+          gridCellSet.delete(eid);
 
           // get rid of empty sets to avoid memory leak
-          if(gridCellSet?.size <= 0){
+          if(gridCellSet.size <= 0){
             this.spatialGrid.delete(cellKey);
           }
         }
