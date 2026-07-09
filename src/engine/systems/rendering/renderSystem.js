@@ -45,12 +45,12 @@ class RenderSystem {
         const transform = ecs.getComponent(eid, 'Transform');
         const spriteComp = ecs.getComponent(eid, 'Sprite');
         const texture = getTexture(spriteComp.textureId);
-        if(texture == undefined){
-          continue;
-        }
+
+        if(texture == undefined) continue;
 
         const pixiSprite = new Sprite(texture);
         pixiSprite.anchor.set(0.5); // Center the sprite on its position
+        pixiSprite.label = spriteComp.textureId;
         this.syncSpriteTransform(transform, pixiSprite);
 
         this.#container.addChild(pixiSprite);
