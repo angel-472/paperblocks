@@ -82,8 +82,21 @@ class PhysicsSystem {
       for(const eid of entityIds){
         if(eid === collider.entityId) continue;
 
-        console.log("Shared space :o")
-        // TODO: Axis-Aligned Bounding Box (AABB) collision detection between concerned collider and entity that shares the cell
+        // console.log("Shared space :o")
+        // TODO: Axis-Aligned Bounding Box (AABB) collision detection between concerned collider and entity that shares the cell  
+        const otherCollider = ecs.getComponent(eid, 'Collider');
+        const otherTransform = ecs.getComponent(eid, 'Transform');
+
+        if(otherCollider == undefined || otherTransform == undefined) continue;
+
+        if(
+          futureTransform.x < otherTransform.x + otherCollider.width &&
+          futureTransform.x + collider.width > otherTransform.x &&
+          futureTransform.y < otherTransform.y + otherCollider.height &&
+          futureTransform.y + collider.height > otherTransform.y
+        ){
+          return true;
+        }
       }
     }
 
