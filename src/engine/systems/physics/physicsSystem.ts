@@ -3,6 +3,10 @@ import { engine } from '../../engine.js';
 const GRAVITY = 0.1; // Gravity constant, adjust as needed
 export const SPATIAL_GRID_CELL_SIZE = 16; // Size of each cell in the spatial grid, adjust based on typical entity size
 
+type CollisionResult = {
+  result: boolean,
+  found: any | undefined
+}
 
 class PhysicsSystem {
   spatialGrid;
@@ -54,18 +58,32 @@ class PhysicsSystem {
         const futureX = transform.x + velocity.x;
         const futureY = transform.y + velocity.y;
 
-        if(this.checkForCollisions(collider, transform, futureX, transform.y)){
+        const horizontalCollCheck = this.checkForCollisions(collider, transform, futureX, transform.y);
+        const verticalCollCheck = this.checkForCollisions(collider, transform, transform.x, futureY);
+
+        if(horizontalCollCheck.result == true){
           velocity.x = 0; // Stop horizontal movement on collision
         }
-        if(this.checkForCollisions(collider, transform, transform.x, futureY)){
+        if(verticalCollCheck.result == true){
           velocity.y = 0; // Stop vertical movement on collision
+          const found = verticalCollCheck.found;
+
+          // Clamp on top
+          if(found !== undefined && found.transform.y > transform.y){
+            const maxY = found.transform.y - found.collider.height;
+            transform.y = maxY;
+          }
+
+          // Todo: Bottom clamp, left clamp, right clamp (Clamping is done so it doesn't slightly phase into other objects and instead sits outside the boundary)
         }
       }
+
+      // Apply the movement change
       transform.x += velocity.x;
       transform.y += velocity.y;
     }
   }
-  checkForCollisions(collider: any, transform: any, testX: number, testY: number): boolean {
+  checkForCollisions(collider: any, transform: any, testX: number, testY: number): CollisionResult {
     //Checks if there would be a collision if the collider were at the testX and testY position. Returns true if a collision would occur.
 
     const ecs = engine.getECS();
@@ -95,12 +113,12 @@ class PhysicsSystem {
           futureTransform.y < otherTransform.y + otherCollider.height &&
           futureTransform.y + collider.height > otherTransform.y
         ){
-          return true;
+          return {result: true, found: {collider: otherCollider, transform: otherTransform}};
         }
       }
     }
 
-    return false; //for now
+    return {result: false, found: {}}; //for now
   }
 
   _updateSpatialGrid(){
