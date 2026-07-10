@@ -63,18 +63,11 @@ class PhysicsSystem {
 
         if(horizontalCollCheck.result == true){
           velocity.x = 0; // Stop horizontal movement on collision
+          // console.log('x velocity collision')
         }
         if(verticalCollCheck.result == true){
           velocity.y = 0; // Stop vertical movement on collision
           const found = verticalCollCheck.found;
-
-          // Clamp on top
-          if(found !== undefined && found.transform.y > transform.y){
-            const maxY = found.transform.y - found.collider.height;
-            transform.y = maxY;
-          }
-
-          // Todo: Bottom clamp, left clamp, right clamp (Clamping is done so it doesn't slightly phase into other objects and instead sits outside the boundary)
         }
       }
 
@@ -89,6 +82,8 @@ class PhysicsSystem {
     const ecs = engine.getECS();
 
     let futureTransform = structuredClone(transform)
+    futureTransform.x = testX;
+    futureTransform.y = testY;
 
     const futureCoveredCells = this.getCoveredCells(futureTransform, collider);
     
