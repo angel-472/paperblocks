@@ -64,6 +64,7 @@ export class ECS {
 
     this.#components.get(componentType)?.set(entityId, componentData);
     signal.emit("ECS_ComponentAdded", {entityId, componentType, componentData});
+    return componentData;
   }
 
   getComponent(entityId: number, componentType: string){
