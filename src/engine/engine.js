@@ -26,6 +26,10 @@ class Engine {
   }
   // Update lifecycle method, called every millisecond (uncapped) by the game loop, provides deltaTime for frame-independent updates
   _update(deltaTime){
+    if(deltaTime > 100){
+      console.warn("Jumbo frame detected. Skipping.");
+      return;
+    }
     this.#physicsSystem._update(deltaTime); //first, so that physics updates before rendering
 
     this.#renderSystem._update(deltaTime); //last
